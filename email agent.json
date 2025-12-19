@@ -1,0 +1,339 @@
+{
+  "name": "email agent",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -224,
+        -64
+      ],
+      "id": "bcba179c-46e5-477d-95f6-b79fc1906be1",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "VvwiLarv0AhejcRN",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $json.snippet }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "Consultation Request",
+              "description": "classify emails that inquire about services, availability or scheduling a consultation"
+            },
+            {
+              "category": "Billing",
+              "description": "classify emails that are related to payment inquiry, invoices, charges, or financial transactions "
+            },
+            {
+              "category": "Customer Support",
+              "description": "Classify emails from current clients requesting help with the technical issues, product usage, or service related assistance"
+            },
+            {
+              "category": "Education",
+              "description": "classify emails that are related to education or skills or courses"
+            }
+          ]
+        },
+        "options": {
+          "systemPromptTemplate": "Please classify the text provided by the user into one of the following categories: {categories}, and use the provided formatting instructions below. Don't explain, and only output the json."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [
+        -16,
+        -64
+      ],
+      "id": "0b8db455-8301-4289-ae2c-28aa8290f8b5",
+      "name": "Text Classifier"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -96,
+        144
+      ],
+      "id": "a9983378-0ac1-41d5-8a43-1e5c60437e2d",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "rAnXEy3UzX6sa3kF",
+          "name": "Google Gemini(PaLM) Api account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "Label_4373815909994067866"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        240,
+        -192
+      ],
+      "id": "ce6b5640-b810-4b5d-9689-68a60a19b089",
+      "name": "Consultation Request",
+      "webhookId": "62e3fc1b-5123-437e-8ca7-bf8a2cf1268a",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "VvwiLarv0AhejcRN",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "Label_1244886302368767853"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        448,
+        -112
+      ],
+      "id": "f1c3b10f-8ce5-49ca-9716-40f25e379d2e",
+      "name": "Billing",
+      "webhookId": "62e3fc1b-5123-437e-8ca7-bf8a2cf1268a",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "VvwiLarv0AhejcRN",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "Label_8405709409188798975"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        496,
+        80
+      ],
+      "id": "87cadce4-0c37-433b-ae89-54fbbc204c9c",
+      "name": "Customer support",
+      "webhookId": "62e3fc1b-5123-437e-8ca7-bf8a2cf1268a",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "VvwiLarv0AhejcRN",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "Label_8798683054314751173"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        336,
+        208
+      ],
+      "id": "be776fa8-721e-4f5f-8dea-6beaca6cdd01",
+      "name": "education",
+      "webhookId": "62e3fc1b-5123-437e-8ca7-bf8a2cf1268a",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "VvwiLarv0AhejcRN",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Your task to take the unread mails from the email and craft a response accordingly. Get the unread email from the body {{ $json.snippet }} and write it for the email based on {{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        656,
+        -112
+      ],
+      "id": "f9777814-f424-4c89-820f-323bf8f9c771",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "rAnXEy3UzX6sa3kF",
+          "name": "Google Gemini(PaLM) Api account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "={{ $('Text Classifier').item.json.Subject }}",
+        "message": "={{ $json.content.parts[0].text }}",
+        "options": {
+          "threadId": "={{ $('Gmail Trigger').item.json.threadId }}"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1008,
+        -112
+      ],
+      "id": "5a1255a3-36a9-4db1-adc8-d637561eb68c",
+      "name": "Create a draft",
+      "webhookId": "d2a86571-6189-441a-803c-9bb3bab7b9c6",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "VvwiLarv0AhejcRN",
+          "name": "Gmail account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Classifier": {
+      "main": [
+        [
+          {
+            "node": "Consultation Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Billing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Customer support",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "education",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Billing": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultation Request": {
+      "main": [
+        []
+      ]
+    },
+    "education": {
+      "main": [
+        []
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Create a draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "43e28a47-6129-4518-b70e-1cf0754ac8d2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "89ba77357b7d638ca916ec00d0cf8c3e29ca9e2bc568614c33bf71297392c5c9"
+  },
+  "id": "nXNPP33YQvxjfQmD",
+  "tags": []
+}
