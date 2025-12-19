@@ -18,6 +18,8 @@ An AI-powered email automation built with **n8n**, **Google Gemini**, and **Gmai
 - ⚡ Fully automated using n8n workflow  
 
 ---
+![WhatsApp Image 2025-12-19 at 22 06 49_4cd9397d](https://github.com/user-attachments/assets/c19263af-ed79-464a-b786-1b160a67735b)
+
 
 ## 🧩 Workflow Overview
 
